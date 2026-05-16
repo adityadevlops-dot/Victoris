@@ -7,33 +7,33 @@ import { useState, useEffect, useCallback } from "react";
 const DIALOGUES = [
   {
     id: 1,
-    line: "Welcome to Victoris.",
-    sub: "The arena where code meets combat.",
+    line: "ENTER VICTORIS.",
+    sub: "The arena where code meets combat. Compete. Conquer. Climb.",
   },
   {
     id: 2,
-    line: "Every solution earns Victo Points.",
-    sub: "Points define your rank. Rank defines your legend.",
+    line: "EARN VICTO POINTS.",
+    sub: "Every solution builds your rank. Rank defines your legend.",
   },
   {
     id: 3,
-    line: "The Arena holds thousands of challenges.",
-    sub: "Arrays. Graphs. Dynamic Programming. Every domain. Every difficulty.",
+    line: "THOUSANDS OF BATTLES.",
+    sub: "Arrays. Graphs. Dynamic Programming. Every domain. Every difficulty level.",
   },
   {
     id: 4,
-    line: "Battle Rooms are where champions are made.",
-    sub: "Real-time. Same problem. First correct solution wins.",
+    line: "REAL-TIME BATTLES.",
+    sub: "Same problem. Real competitors. First perfect solution wins the arena.",
   },
   {
     id: 5,
-    line: "Bronze. Silver. Gold. Platinum. Diamond. Master. Legend.",
-    sub: "Seven ranks. One path. Yours to climb.",
+    line: "SEVEN RANKS AWAIT.",
+    sub: "Bronze to Legend. Choose your path. Climb the competitive ladder.",
   },
   {
     id: 6,
-    line: "The arena is ready.",
-    sub: "Enter. Compete. Conquer.",
+    line: "YOUR ARENA AWAITS.",
+    sub: "Enter. Compete. Conquer. This is Victoris.",
   },
 ];
 
@@ -517,13 +517,17 @@ function OrisOnboarding({
           animation: blink 0.8s step-end infinite;
         }
         .rank-item { animation: rank-reveal 0.4s ease-out both; }
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.7); }
+          50% { box-shadow: 0 0 0 8px rgba(220,38,38,0.2); }
+        }
         .next-btn {
           background:transparent;
-          border: 1px solid rgba(255,0,0,0.55);
-          color:#dc2626;
+          border: 2px solid rgba(255,0,0,0.6);
+          color:#ff0000;
           font-family:'Orbitron',monospace;
-          font-size:14px; letter-spacing:0.15em;
-          padding:0 34px; height:56px; cursor:pointer;
+          font-size:15px; letter-spacing:0.18em; font-weight:700;
+          padding:0; width:210px; height:62px; cursor:pointer;
           transition:all 0.3s ease;
           position:relative; overflow:hidden;
           display:flex; align-items:center; justify-content:center;
@@ -531,17 +535,19 @@ function OrisOnboarding({
         .next-btn::before {
           content:'';
           position:absolute; inset:0;
-          background:rgba(220,38,38,0);
+          background:rgba(255,0,0,0);
           transition:background 0.3s ease;
+          z-index:-1;
         }
         .next-btn:hover { 
           border-color:#ff0000; 
-          background:#dc2626;
+          background:#ff0000;
           color:#000;
-          box-shadow: 0 0 20px rgba(220,38,38,0.5);
+          box-shadow: 0 0 30px rgba(255,0,0,0.6), inset 0 0 20px rgba(255,0,0,0.3);
+          animation: pulse-glow 1.2s ease-out;
         }
-        .next-btn:hover::before { background:rgba(220,38,38,0.2); }
-        .next-btn:active { transform:scale(0.96); }
+        .next-btn:hover::before { background:rgba(255,0,0,0.15); }
+        .next-btn:active { transform:scale(0.95); }
         .skip-btn {
           background:transparent; border:none;
           color:rgba(255,255,255,0.72);
@@ -551,17 +557,40 @@ function OrisOnboarding({
         }
         .skip-btn:hover { color:rgba(255,40,40,0.9); }
         .step-dot {
-          width:14px; height:14px; border-radius:50%;
+          width:18px; height:18px; border-radius:50%;
           transition:all 0.3s ease;
         }
+        @keyframes dot-pulse {
+          0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,0,0,0.7); }
+          50% { transform: scale(1.1); box-shadow: 0 0 0 4px rgba(255,0,0,0.3); }
+        }
+        .step-dot-active {
+          animation: dot-pulse 1.5s ease-in-out infinite;
+        }
         @keyframes particle-drift {
-          0% { transform: translate(0, 0); opacity:0.3; }
-          50% { opacity:0.6; }
-          100% { transform: translate(-2px, 3px); opacity:0.2; }
+          0% { transform: translate(0, 0) rotateZ(0deg); opacity:0.4; }
+          50% { opacity:0.7; }
+          100% { transform: translate(-4px, 8px) rotateZ(45deg); opacity:0.1; }
+        }
+        @keyframes particle-float {
+          0%, 100% { transform: translateY(0px); opacity:0.3; }
+          50% { transform: translateY(-20px); opacity:0.6; }
         }
         @keyframes scanline-horizontal {
           0% { transform: translateY(-100%); }
           100% { transform: translateY(100vh); }
+        }
+        @keyframes scanline-fast {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(100vh); }
+        }
+        .particle {
+          position: fixed;
+          width: 2px;
+          height: 2px;
+          background: rgba(255,0,0,0.5);
+          border-radius: 50%;
+          pointer-events: none;
         }
         .dialogue-panel-bg {
           position: fixed; inset:0;
@@ -577,15 +606,22 @@ function OrisOnboarding({
           pointer-events: none;
           z-index: -1;
         }
+        @keyframes oris-glow-pulse {
+          0%, 100% { filter: drop-shadow(0 0 20px rgba(255,0,0,0.3)); }
+          50% { filter: drop-shadow(0 0 40px rgba(255,0,0,0.5)) drop-shadow(0 0 80px rgba(255,0,0,0.2)); }
+        }
         .oris-avatar-container {
           position: fixed;
-          bottom: 40px;
-          right: 40px;
-          width: 280px;
-          height: 380px;
-          opacity: 0.6;
+          bottom: 50px;
+          right: 5%;
+          width: 380px;
+          height: 520px;
+          opacity: 0.85;
           z-index: 10;
           pointer-events: none;
+          transform: scale(1.7);
+          animation: oris-glow-pulse 3s ease-in-out infinite;
+          filter: drop-shadow(0 0 40px rgba(255,0,0,0.25));
         }
         @media (max-width:1024px) {
           .oris-avatar-container { display:none !important; }
@@ -593,8 +629,36 @@ function OrisOnboarding({
         }
       `}</style>
 
+      {/* Animated Particles Background */}
+      {[...Array(12)].map((_, i) => (
+        <div
+          key={`particle-${i}`}
+          className="particle"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            animation: `particle-float ${3 + Math.random() * 4}s ease-in-out infinite`,
+            animationDelay: `${Math.random() * 2}s`,
+          }}
+        />
+      ))}
+
       <div className="dialogue-scanline" />
       <div className="dialogue-panel-bg" />
+
+      {/* Animated Particles Background */}
+      {[...Array(12)].map((_, i) => (
+        <div
+          key={`particle-${i}`}
+          className="particle"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            animation: `particle-float ${3 + Math.random() * 4}s ease-in-out infinite`,
+            animationDelay: `${Math.random() * 2}s`,
+          }}
+        />
+      ))}
 
       {/* Main Content - Centered, Full Width */}
       <div
@@ -605,7 +669,7 @@ function OrisOnboarding({
           justifyContent: "center",
           width: "100%",
           maxWidth: 1200,
-          padding: "60px 40px",
+          padding: "140px 60px 80px 60px",
           position: "relative",
           zIndex: 100,
         }}
@@ -700,14 +764,14 @@ function OrisOnboarding({
           {done && (
             <div
               style={{
-                fontSize: 20,
-                color: "rgba(255,255,255,0.72)",
-                lineHeight: 1.8,
-                letterSpacing: "0.01em",
+                fontSize: 23,
+                color: "rgba(255,255,255,0.75)",
+                lineHeight: 1.9,
+                letterSpacing: "0.03em",
                 fontFamily: "'Inter', system-ui, sans-serif",
                 fontWeight: 400,
-                maxWidth: 700,
-                marginBottom: 48,
+                maxWidth: 800,
+                marginBottom: 56,
                 animation: "sub-in 0.5s ease-out",
               }}
             >
@@ -741,45 +805,47 @@ function OrisOnboarding({
         </div>
 
         {/* CTA Buttons - Bottom */}
-        <div style={{ display: "flex", alignItems: "center", gap: 28, marginTop: 60, width: "100%" }}>
-          <button
-            className="next-btn"
-            onClick={handleNext}
-            style={{
-              minWidth: "200px",
-            }}
-          >
-            {!done
-              ? "REVEAL"
-              : step >= DIALOGUES.length - 1
-                ? "ENTER ARENA →"
-                : "NEXT →"}
-          </button>
-          <button className="skip-btn" onClick={onComplete}>
-            SKIP ALL
-          </button>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            gap: 24,
+            marginTop: 72,
+            width: "100%",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <button
+              className="next-btn"
+              onClick={handleNext}
+            >
+              {!done
+                ? "REVEAL"
+                : step >= DIALOGUES.length - 1
+                  ? "ENTER ARENA"
+                  : "NEXT"}
+            </button>
+            <button className="skip-btn" onClick={onComplete}>
+              SKIP ALL
+            </button>
+          </div>
           <span
             style={{
-              marginLeft: "auto",
-              fontSize: 16,
-              color: "rgba(255,255,255,0.72)",
-              letterSpacing: "0.15em",
+              fontSize: 18,
+              color: "rgba(255,255,255,0.6)",
+              letterSpacing: "0.12em",
               fontFamily: "'Orbitron', monospace",
+              fontWeight: 400,
             }}
           >
-            SPACE / → to advance
+            Press SPACE to continue
           </span>
         </div>
       </div>
 
-      {/* Oris Avatar - Bottom Right (Desktop Only) */}
-      <div
-        className="oris-avatar-container"
-        style={{
-          transform: "scale(0.85)",
-          opacity: 0.5,
-        }}
-      >
+      {/* Oris Avatar - Bottom Right with Holographic Glow (Desktop Only) */}
+      <div className="oris-avatar-container">
         <OrisAvatar />
       </div>
 
