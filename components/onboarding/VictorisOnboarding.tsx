@@ -481,7 +481,9 @@ function OrisOnboarding({
         inset: 0,
         background: "#0a0a0a",
         display: "flex",
-        alignItems: "stretch",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
         zIndex: 9998,
         overflow: "hidden",
         fontFamily: "'Orbitron',monospace",
@@ -510,8 +512,8 @@ function OrisOnboarding({
           animation: dialogue-in 0.3s ease-out;
         }
         .cursor {
-          display:inline-block; width:2px; height:1em;
-          background:#dc2626; margin-left:3px; vertical-align:-0.1em;
+          display:inline-block; width:3px; height:1em;
+          background:#ff0000; margin-left:4px; vertical-align:-0.1em;
           animation: blink 0.8s step-end infinite;
         }
         .rank-item { animation: rank-reveal 0.4s ease-out both; }
@@ -562,72 +564,63 @@ function OrisOnboarding({
           100% { transform: translateY(100vh); }
         }
         .dialogue-panel-bg {
-          position: absolute; inset:0;
+          position: fixed; inset:0;
           background-image: linear-gradient(0deg, rgba(220,38,38,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(220,38,38,0.02) 1px, transparent 1px);
           background-size: 40px 40px;
           pointer-events: none;
+          z-index: -1;
         }
         .dialogue-scanline {
-          position: absolute; inset:0; left:0; right:0; height:2px;
+          position: fixed; inset:0; left:0; right:0; height:2px;
           background: linear-gradient(90deg, transparent, rgba(220,38,38,0.3), transparent);
           animation: scanline-horizontal 6s linear infinite;
           pointer-events: none;
+          z-index: -1;
         }
-        @media (max-width:768px) {
-          .oris-panel { display:none !important; }
-          .dialogue-panel { max-width:100% !important; padding:32px 24px !important; }
+        .oris-avatar-container {
+          position: fixed;
+          bottom: 40px;
+          right: 40px;
+          width: 280px;
+          height: 380px;
+          opacity: 0.6;
+          z-index: 10;
+          pointer-events: none;
+        }
+        @media (max-width:1024px) {
+          .oris-avatar-container { display:none !important; }
+          .dialogue-container { padding:40px 32px !important; }
         }
       `}</style>
 
-      {/* Oris Panel */}
+      <div className="dialogue-scanline" />
+      <div className="dialogue-panel-bg" />
+
+      {/* Main Content - Centered, Full Width */}
       <div
-        className="oris-panel"
         style={{
-          width: "42%",
-          minWidth: 320,
-          maxWidth: 460,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          padding: "40px 20px 40px 40px",
-          borderRight: "1px solid rgba(255,255,255,0.04)",
+          width: "100%",
+          maxWidth: 1200,
+          padding: "60px 40px",
           position: "relative",
+          zIndex: 100,
         }}
       >
+        {/* Progress Dots - Top */}
         <div
           style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage:
-              "linear-gradient(rgba(127,29,29,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(127,29,29,0.04) 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-            pointerEvents: "none",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginBottom: 80,
+            alignSelf: "flex-start",
+            paddingLeft: 0,
           }}
-        />
-        <OrisAvatar />
-      </div>
-
-      {/* Dialogue Panel */}
-      <div
-        className="dialogue-panel"
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          padding: "40px 64px",
-          maxWidth: 640,
-          margin: "0 auto",
-          position: "relative",
-          borderLeft: "1px solid rgba(220,38,38,0.08)",
-          overflow: "hidden",
-        }}
-      >
-        <div className="dialogue-scanline" />
-        <div className="dialogue-panel-bg" />
-        {/* Progress Dots */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 48 }}>
+        >
           {DIALOGUES.map((_, i) => (
             <div
               key={i}
@@ -659,21 +652,22 @@ function OrisOnboarding({
           </span>
         </div>
 
-        {/* Dialogue */}
+        {/* Main Dialogue */}
         <div
           style={{
             opacity: transitioning ? 0 : 1,
             transition: "opacity 0.25s",
-            flex: 1,
+            width: "100%",
             display: "flex",
             flexDirection: "column",
+            alignItems: "flex-start",
             justifyContent: "center",
           }}
         >
           <div
             style={{
-              marginBottom: 20,
-              fontSize: 18,
+              marginBottom: 16,
+              fontSize: 20,
               color: "rgba(255,40,40,0.9)",
               letterSpacing: "0.3em",
               fontFamily: "'Orbitron', monospace",
@@ -683,35 +677,37 @@ function OrisOnboarding({
             ORIS // {String(step + 1).padStart(2, "0")}
           </div>
 
+          {/* Main Heading - HUGE, FULL WIDTH */}
           <div
             className="dialogue-text"
             key={step}
             style={{
-              fontSize: "clamp(58px, 6vw, 96px)",
+              fontSize: "clamp(72px, 8vw, 120px)",
               fontWeight: 800,
-              letterSpacing: "-0.03em",
-              lineHeight: 1.05,
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
               color: "#ffffff",
-              marginBottom: 24,
-              minHeight: 100,
+              marginBottom: 32,
               fontFamily: "'Orbitron', monospace",
+              wordSpacing: "0.05em",
             }}
           >
             {displayed}
             {!done && <span className="cursor" />}
           </div>
 
+          {/* Sub Description */}
           {done && (
             <div
               style={{
-                fontSize: 18,
+                fontSize: 20,
                 color: "rgba(255,255,255,0.72)",
                 lineHeight: 1.8,
-                letterSpacing: "0.02em",
+                letterSpacing: "0.01em",
                 fontFamily: "'Inter', system-ui, sans-serif",
                 fontWeight: 400,
-                maxWidth: 520,
-                marginTop: 20,
+                maxWidth: 700,
+                marginBottom: 48,
                 animation: "sub-in 0.5s ease-out",
               }}
             >
@@ -721,15 +717,15 @@ function OrisOnboarding({
 
           {/* Rank Badges */}
           {step === 4 && done && (
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 20 }}>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 48 }}>
               {RANK_SEQUENCE.map((r, i) => (
                 <div
                   key={i}
                   className="rank-item"
                   style={{
-                    fontSize: 10,
-                    padding: "4px 8px",
-                    borderRadius: 2,
+                    fontSize: 12,
+                    padding: "6px 14px",
+                    borderRadius: 4,
                     background: "rgba(220,38,38,0.1)",
                     border: "1px solid rgba(220,38,38,0.3)",
                     color: "rgba(220,38,38,0.8)",
@@ -744,13 +740,13 @@ function OrisOnboarding({
           )}
         </div>
 
-        {/* CTA */}
-        <div style={{ display: "flex", alignItems: "center", gap: 24, marginTop: 48 }}>
+        {/* CTA Buttons - Bottom */}
+        <div style={{ display: "flex", alignItems: "center", gap: 28, marginTop: 60, width: "100%" }}>
           <button
             className="next-btn"
             onClick={handleNext}
             style={{
-              minWidth: "180px",
+              minWidth: "200px",
             }}
           >
             {!done
@@ -774,28 +770,40 @@ function OrisOnboarding({
             SPACE / → to advance
           </span>
         </div>
+      </div>
 
-        {/* Progress Bar */}
+      {/* Oris Avatar - Bottom Right (Desktop Only) */}
+      <div
+        className="oris-avatar-container"
+        style={{
+          transform: "scale(0.85)",
+          opacity: 0.5,
+        }}
+      >
+        <OrisAvatar />
+      </div>
+
+      {/* Progress Bar - Bottom */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 2,
+          background: "rgba(255,255,255,0.04)",
+          zIndex: 100,
+        }}
+      >
         <div
           style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 1,
-            background: "rgba(255,255,255,0.04)",
+            height: "100%",
+            background: "#dc2626",
+            width: `${progress}%`,
+            transition: "width 0.4s ease",
+            boxShadow: "0 0 6px rgba(220,38,38,0.5)",
           }}
-        >
-          <div
-            style={{
-              height: "100%",
-              background: "#dc2626",
-              width: `${progress}%`,
-              transition: "width 0.4s ease",
-              boxShadow: "0 0 6px rgba(220,38,38,0.5)",
-            }}
-          />
-        </div>
+        />
       </div>
     </div>
   );
