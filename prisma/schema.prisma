@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  username      String    @unique
+  email         String    @unique
+  passwordHash  String
+  displayName   String?
+  avatar        String?
+  bio           String?
+  rank          Int       @default(0)
+  victorisPoints Int      @default(0)
+  wins          Int       @default(0)
+  losses        Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  solutions     Solution[]
+  battles       BattleParticipant[]
+}
+
+model Problem {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  description String
+  difficulty  String    // "easy", "medium", "hard"
+  category    String
+  examples    Json      // Array of {input, output}
+  testCases   Json      // Array of {input, expected}
+  points      Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  solutions   Solution[]
+  battles     Battle[]
+}
+
+model Solution {
+  id        String    @id @default(cuid())
+  code      String
+  language  String
+  passed    Boolean
+  points    Int       @default(0)
+  createdAt DateTime  @default(now())
+
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problemId String
+  problem   Problem   @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}
+
+model Battle {
+  id        String    @id @default(cuid())
+  roomId    String    @unique
+  status    String    // "waiting", "active", "completed"
+  startedAt DateTime?
+  endedAt   DateTime?
+  createdAt DateTime  @default(now())
+
+  problemId String
+  problem   Problem   @relation(fields: [problemId], references: [id])
+  participants BattleParticipant[]
+}
+
+model BattleParticipant {
+  id       String   @id @default(cuid())
+  status   String   // "joined", "submitted", "passed", "failed"
+  points   Int      @default(0)
+
+  battleId String
+  battle   Battle   @relation(fields: [battleId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([battleId, userId])
+}

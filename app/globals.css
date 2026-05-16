@@ -1,0 +1,55 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0a0a0a;
+  color: #f9fafb;
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111827;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Utility classes */
+.text-accent {
+  color: #dc2626;
+}
+
+.bg-accent {
+  background-color: #dc2626;
+}
+
+.border-accent {
+  border-color: #dc2626;
+}
+
+.hover\:bg-accent-dark:hover {
+  background-color: #7f1d1d;
+}
