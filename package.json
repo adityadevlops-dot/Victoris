@@ -1,35 +1,35 @@
 {
-  "name": "victoris",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
-  },
-  "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "^15.0.0",
-    "typescript": "^5.3.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "@types/node": "^20.10.0",
-    "tailwindcss": "^3.3.0",
-    "postcss": "^8.4.0",
-    "autoprefixer": "^10.4.0",
-    "framer-motion": "^10.16.0",
-    "zustand": "^4.4.0",
-    "@prisma/client": "^5.7.0",
-    "socket.io-client": "^4.7.0",
-    "jsonwebtoken": "^9.1.0",
-    "bcryptjs": "^2.4.0"
-  },
-  "devDependencies": {
-    "prisma": "^5.7.0"
-  }
+    "name":  "victoris",
+    "version":  "0.1.0",
+    "private":  true,
+    "scripts":  {
+                    "dev":  "next dev",
+                    "build":  "next build",
+                    "start":  "next start",
+                    "lint":  "next lint",
+                    "prisma:generate":  "prisma generate",
+                    "prisma:migrate":  "prisma migrate dev",
+                    "prisma:studio":  "prisma studio"
+                },
+    "dependencies":  {
+                         "react":  "^19.0.0",
+                         "react-dom":  "^19.0.0",
+                         "next":  "^15.0.0",
+                         "typescript":  "^5.3.0",
+                         "@types/react":  "^19.0.0",
+                         "@types/react-dom":  "^19.0.0",
+                         "@types/node":  "^20.10.0",
+                         "tailwindcss":  "^3.3.0",
+                         "postcss":  "^8.4.0",
+                         "autoprefixer":  "^10.4.0",
+                         "framer-motion":  "^10.16.0",
+                         "zustand":  "^4.4.0",
+                         "@prisma/client":  "^5.7.0",
+                         "socket.io-client":  "^4.7.0",
+                         "jsonwebtoken":  "9.0.2",
+                         "bcryptjs":  "^2.4.0"
+                     },
+    "devDependencies":  {
+                            "prisma":  "^5.7.0"
+                        }
 }
