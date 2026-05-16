@@ -336,12 +336,12 @@ function OrisAvatar(): JSX.Element {
         <div
           className="oris-glow"
           style={{
-            borderRadius: "50% 50% 40% 40%",
+            borderRadius: "12px 12px 0 0",
             overflow: "hidden",
             position: "relative",
             background: "linear-gradient(180deg, #1a0a0a 0%, #0a0a0a 100%)",
             border: "1px solid rgba(220,38,38,0.25)",
-            aspectRatio: "3/4",
+            height: "480px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -367,8 +367,11 @@ function OrisAvatar(): JSX.Element {
             style={{
               width: "100%",
               height: "100%",
-              objectFit: "cover",
-              objectPosition: "center",
+              objectFit: "contain",
+              objectPosition: "top center",
+              display: "block",
+              background: "transparent",
+              boxShadow: "0 0 35px rgba(255,0,0,0.18)",
             }}
           />
         </div>
@@ -388,9 +391,9 @@ function OrisAvatar(): JSX.Element {
               bottom: (k as string).startsWith("b") ? -6 : "auto",
               left: (k as string).endsWith("l") ? -6 : "auto",
               right: (k as string).endsWith("r") ? -6 : "auto",
-              width: 16,
-              height: 16,
-              borderColor: "rgba(220,38,38,0.6)",
+              width: 20,
+              height: 20,
+              borderColor: "rgba(220,38,38,0.8)",
               borderStyle: "solid",
               borderWidth:
                 k === "tl"
@@ -410,8 +413,8 @@ function OrisAvatar(): JSX.Element {
           textAlign: "center",
           marginTop: 12,
           fontFamily: "'Orbitron',monospace",
-          fontSize: 11,
-          color: "rgba(220,38,38,0.6)",
+          fontSize: 13,
+          color: "rgba(220,38,38,0.8)",
           letterSpacing: "0.3em",
         }}
       >
@@ -514,34 +517,61 @@ function OrisOnboarding({
         .rank-item { animation: rank-reveal 0.4s ease-out both; }
         .next-btn {
           background:transparent;
-          border: 1px solid rgba(220,38,38,0.4);
+          border: 1px solid rgba(255,0,0,0.55);
           color:#dc2626;
           font-family:'Orbitron',monospace;
-          font-size:11px; letter-spacing:0.2em;
-          padding:12px 32px; cursor:pointer;
-          transition:all 0.2s;
+          font-size:14px; letter-spacing:0.15em;
+          padding:0 34px; height:56px; cursor:pointer;
+          transition:all 0.3s ease;
           position:relative; overflow:hidden;
+          display:flex; align-items:center; justify-content:center;
         }
         .next-btn::before {
           content:'';
           position:absolute; inset:0;
           background:rgba(220,38,38,0);
-          transition:background 0.2s;
+          transition:background 0.3s ease;
         }
-        .next-btn:hover { border-color:#dc2626; color:#fff; }
-        .next-btn:hover::before { background:rgba(220,38,38,0.1); }
-        .next-btn:active { transform:scale(0.97); }
+        .next-btn:hover { 
+          border-color:#ff0000; 
+          background:#dc2626;
+          color:#000;
+          box-shadow: 0 0 20px rgba(220,38,38,0.5);
+        }
+        .next-btn:hover::before { background:rgba(220,38,38,0.2); }
+        .next-btn:active { transform:scale(0.96); }
         .skip-btn {
           background:transparent; border:none;
-          color:rgba(255,255,255,0.2);
-          font-family:'Orbitron',monospace; font-size:9px;
-          letter-spacing:0.2em; cursor:pointer;
-          transition:color 0.2s; padding:8px;
+          color:rgba(255,255,255,0.72);
+          font-family:'Orbitron',monospace; font-size:16px;
+          letter-spacing:0.15em; cursor:pointer;
+          transition:all 0.3s ease; padding:8px 16px;
         }
-        .skip-btn:hover { color:rgba(220,38,38,0.6); }
+        .skip-btn:hover { color:rgba(255,40,40,0.9); }
         .step-dot {
-          width:6px; height:6px; border-radius:50%;
-          transition:all 0.3s;
+          width:14px; height:14px; border-radius:50%;
+          transition:all 0.3s ease;
+        }
+        @keyframes particle-drift {
+          0% { transform: translate(0, 0); opacity:0.3; }
+          50% { opacity:0.6; }
+          100% { transform: translate(-2px, 3px); opacity:0.2; }
+        }
+        @keyframes scanline-horizontal {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100vh); }
+        }
+        .dialogue-panel-bg {
+          position: absolute; inset:0;
+          background-image: linear-gradient(0deg, rgba(220,38,38,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(220,38,38,0.02) 1px, transparent 1px);
+          background-size: 40px 40px;
+          pointer-events: none;
+        }
+        .dialogue-scanline {
+          position: absolute; inset:0; left:0; right:0; height:2px;
+          background: linear-gradient(90deg, transparent, rgba(220,38,38,0.3), transparent);
+          animation: scanline-horizontal 6s linear infinite;
+          pointer-events: none;
         }
         @media (max-width:768px) {
           .oris-panel { display:none !important; }
@@ -554,6 +584,7 @@ function OrisOnboarding({
         className="oris-panel"
         style={{
           width: "42%",
+          minWidth: 320,
           maxWidth: 460,
           display: "flex",
           flexDirection: "column",
@@ -585,12 +616,16 @@ function OrisOnboarding({
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          padding: "40px 48px",
+          padding: "40px 64px",
           maxWidth: 640,
           margin: "0 auto",
           position: "relative",
+          borderLeft: "1px solid rgba(220,38,38,0.08)",
+          overflow: "hidden",
         }}
       >
+        <div className="dialogue-scanline" />
+        <div className="dialogue-panel-bg" />
         {/* Progress Dots */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 48 }}>
           {DIALOGUES.map((_, i) => (
@@ -602,23 +637,25 @@ function OrisOnboarding({
                   i < step
                     ? "#7f1d1d"
                     : i === step
-                      ? "#dc2626"
-                      : "rgba(255,255,255,0.1)",
-                boxShadow: i === step ? "0 0 8px rgba(220,38,38,0.6)" : "none",
-                width: i === step ? 24 : 6,
-                borderRadius: i === step ? 3 : "50%",
+                      ? "#ff0000"
+                      : "rgba(255,255,255,0.15)",
+                boxShadow: i === step ? "0 0 12px rgba(255,0,0,0.7), 0 0 24px rgba(255,0,0,0.3)" : "none",
+                width: 14,
+                height: 14,
+                borderRadius: "50%",
               }}
             />
           ))}
           <span
             style={{
               marginLeft: "auto",
-              fontSize: 9,
-              color: "rgba(255,255,255,0.2)",
+              fontSize: 16,
+              color: "rgba(255,255,255,0.72)",
               letterSpacing: "0.15em",
+              fontFamily: "'Orbitron', monospace",
             }}
           >
-            {step + 1} / {DIALOGUES.length}
+            {String(step + 1).padStart(2, "0")} / {DIALOGUES.length}
           </span>
         </div>
 
@@ -635,10 +672,12 @@ function OrisOnboarding({
         >
           <div
             style={{
-              marginBottom: 8,
-              fontSize: 9,
-              color: "rgba(220,38,38,0.5)",
+              marginBottom: 20,
+              fontSize: 18,
+              color: "rgba(255,40,40,0.9)",
               letterSpacing: "0.3em",
+              fontFamily: "'Orbitron', monospace",
+              fontWeight: 700,
             }}
           >
             ORIS // {String(step + 1).padStart(2, "0")}
@@ -648,12 +687,14 @@ function OrisOnboarding({
             className="dialogue-text"
             key={step}
             style={{
-              fontSize: "clamp(18px, 3vw, 32px)",
-              fontWeight: 700,
-              color: "#fff",
-              lineHeight: 1.3,
-              marginBottom: 16,
-              minHeight: 80,
+              fontSize: "clamp(58px, 6vw, 96px)",
+              fontWeight: 800,
+              letterSpacing: "-0.03em",
+              lineHeight: 1.05,
+              color: "#ffffff",
+              marginBottom: 24,
+              minHeight: 100,
+              fontFamily: "'Orbitron', monospace",
             }}
           >
             {displayed}
@@ -663,13 +704,14 @@ function OrisOnboarding({
           {done && (
             <div
               style={{
-                fontSize: 12,
-                color: "rgba(255,255,255,0.4)",
-                lineHeight: 1.6,
-                letterSpacing: "0.05em",
-                fontFamily: "system-ui, sans-serif",
+                fontSize: 18,
+                color: "rgba(255,255,255,0.72)",
+                lineHeight: 1.8,
+                letterSpacing: "0.02em",
+                fontFamily: "'Inter', system-ui, sans-serif",
                 fontWeight: 400,
-                maxWidth: 440,
+                maxWidth: 520,
+                marginTop: 20,
                 animation: "sub-in 0.5s ease-out",
               }}
             >
@@ -703,8 +745,14 @@ function OrisOnboarding({
         </div>
 
         {/* CTA */}
-        <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 40 }}>
-          <button className="next-btn" onClick={handleNext}>
+        <div style={{ display: "flex", alignItems: "center", gap: 24, marginTop: 48 }}>
+          <button
+            className="next-btn"
+            onClick={handleNext}
+            style={{
+              minWidth: "180px",
+            }}
+          >
             {!done
               ? "REVEAL"
               : step >= DIALOGUES.length - 1
@@ -717,9 +765,10 @@ function OrisOnboarding({
           <span
             style={{
               marginLeft: "auto",
-              fontSize: 9,
-              color: "rgba(255,255,255,0.12)",
-              letterSpacing: "0.12em",
+              fontSize: 16,
+              color: "rgba(255,255,255,0.72)",
+              letterSpacing: "0.15em",
+              fontFamily: "'Orbitron', monospace",
             }}
           >
             SPACE / → to advance
