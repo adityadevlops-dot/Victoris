@@ -1,51 +1,53 @@
-"use client";
+'use client'
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef, memo, type ReactNode } from 'react'
+import styles from './VictorisOnboarding.module.css'
 
 // ─── CONSTANTS ───────────────────────────────────────────────────────────────
 
 const DIALOGUES = [
   {
     id: 1,
-    line: "ENTER VICTORIS.",
-    sub: "The arena where code meets combat. Compete. Conquer. Climb.",
+    line: 'Welcome to Victoris.',
+    sub: 'The arena where code meets combat.',
   },
   {
     id: 2,
-    line: "EARN VICTO POINTS.",
-    sub: "Every solution builds your rank. Rank defines your legend.",
+    line: 'Every solution earns Victo Points.',
+    sub: 'Points define your rank. Rank defines your legend.',
   },
   {
     id: 3,
-    line: "THOUSANDS OF BATTLES.",
-    sub: "Arrays. Graphs. Dynamic Programming. Every domain. Every difficulty level.",
+    line: 'The Arena holds thousands of challenges.',
+    sub: 'Arrays. Graphs. Dynamic Programming. Every domain. Every difficulty.',
   },
   {
     id: 4,
-    line: "REAL-TIME BATTLES.",
-    sub: "Same problem. Real competitors. First perfect solution wins the arena.",
+    line: 'Battle Rooms are where champions are made.',
+    sub: 'Real-time. Same problem. First correct solution wins.',
   },
   {
     id: 5,
-    line: "SEVEN RANKS AWAIT.",
-    sub: "Bronze to Legend. Choose your path. Climb the competitive ladder.",
+    line: 'Bronze. Silver. Gold. Platinum. Diamond. Master. Legend.',
+    sub: 'Seven ranks. One path. Yours to climb.',
   },
   {
     id: 6,
-    line: "YOUR ARENA AWAITS.",
-    sub: "Enter. Compete. Conquer. This is Victoris.",
+    line: 'The arena is ready.',
+    sub: 'Enter. Compete. Conquer.',
   },
-];
+]
 
-const RANK_SEQUENCE = [
-  "Bronze",
-  "Silver",
-  "Gold",
-  "Platinum",
-  "Diamond",
-  "Master",
-  "Legend",
-];
+const RANK_SEQUENCE = ['Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master', 'Legend']
+const RANK_COLORS = ['#cd7f32', '#c0c0c0', '#ffd700', '#e5e4e2', '#7dd3fc', '#f87171', '#dc2626']
+const LS_KEY = 'victoris_onboarding_v1'
+
+const ANIMATION_TIMINGS = {
+  introStart: 600,
+  introComplete: 4200,
+  orisStart: 100,
+  transitionDuration: 280,
+} as const
 
 // ─── TYPEWRITER HOOK ──────────────────────────────────────────────────────────
 
@@ -54,134 +56,55 @@ function useTypewriter(
   speed: number = 38,
   active: boolean = true
 ): { displayed: string; done: boolean; skip: () => void } {
-  const [displayed, setDisplayed] = useState("");
-  const [done, setDone] = useState(false);
+  const [displayed, setDisplayed] = useState('')
+  const [done, setDone] = useState(false)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
-    if (!active) return;
-    if (displayed.length === text.length) {
-      setDone(true);
-      return;
+    if (!active || done) return
+
+    setDisplayed('')
+    setDone(false)
+
+    let i = 0
+    intervalRef.current = setInterval(() => {
+      i++
+      setDisplayed(text.slice(0, i))
+      if (i >= text.length) {
+        clearInterval(intervalRef.current!)
+        setDone(true)
+      }
+    }, speed)
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
     }
+  }, [text, speed, active, done])
 
-    const timer = setTimeout(() => {
-      setDisplayed((d) => d + text[d.length]);
-    }, speed);
+  const skip = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current)
+    setDisplayed(text)
+    setDone(true)
+  }, [text])
 
-    return () => clearTimeout(timer);
-  }, [displayed, text, active, speed]);
-
-  return {
-    displayed,
-    done,
-    skip: () => {
-      setDisplayed(text);
-      setDone(true);
-    },
-  };
+  return { displayed, done, skip }
 }
 
 // ─── GLITCH LOGO ──────────────────────────────────────────────────────────────
 
-function GlitchLogo({ visible }: { visible: boolean }): JSX.Element {
+const GlitchLogo = memo(function GlitchLogo({ visible }: { visible: boolean }): ReactNode {
   return (
-    <div
-      style={{
-        position: "relative",
-        display: "inline-block",
-        opacity: visible ? 1 : 0,
-        transition: "opacity 0.6s ease",
-      }}
-    >
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap');
-
-        @keyframes glitch-1 {
-          0%,100% { clip-path: inset(0 0 95% 0); transform: translate(-3px,0); opacity:0.8; }
-          20%      { clip-path: inset(30% 0 50% 0); transform: translate(3px,0); }
-          40%      { clip-path: inset(60% 0 20% 0); transform: translate(-2px,0); }
-          60%      { clip-path: inset(80% 0 5% 0);  transform: translate(2px,0); }
-          80%      { clip-path: inset(10% 0 75% 0); transform: translate(-1px,0); }
-        }
-        @keyframes glitch-2 {
-          0%,100% { clip-path: inset(80% 0 0 0); transform: translate(3px,0); opacity:0.6; }
-          25%      { clip-path: inset(20% 0 60% 0); transform: translate(-3px,0); }
-          50%      { clip-path: inset(50% 0 30% 0); transform: translate(2px,0); }
-          75%      { clip-path: inset(5% 0 85% 0);  transform: translate(-2px,0); }
-        }
-        @keyframes logo-reveal {
-          0%   { letter-spacing: 0.8em; opacity: 0; filter: blur(8px); }
-          60%  { letter-spacing: 0.12em; opacity: 0.9; filter: blur(1px); }
-          100% { letter-spacing: 0.15em; opacity: 1; filter: blur(0); }
-        }
-        @keyframes tagline-in {
-          0%   { opacity: 0; transform: translateY(14px); letter-spacing: 0.5em; }
-          100% { opacity: 1; transform: translateY(0);    letter-spacing: 0.35em; }
-        }
-        @keyframes scanline-move {
-          0%   { transform: translateY(-100%); }
-          100% { transform: translateY(100vh); }
-        }
-        @keyframes red-pulse {
-          0%,100% { text-shadow: 0 0 20px rgba(220,38,38,0.3); }
-          50%      { text-shadow: 0 0 40px rgba(220,38,38,0.8), 0 0 80px rgba(220,38,38,0.3); }
-        }
-        .logo-main {
-          font-family: 'Orbitron', monospace;
-          font-weight: 900;
-          font-size: clamp(42px, 8vw, 96px);
-          color: #fff;
-          letter-spacing: 0.15em;
-          animation: logo-reveal 1.4s cubic-bezier(0.16,1,0.3,1) forwards, red-pulse 3s ease-in-out 1.6s infinite;
-          position: relative;
-          z-index: 2;
-        }
-        .logo-glitch-1 {
-          position: absolute; top:0; left:0; width:100%; height:100%;
-          font-family: 'Orbitron', monospace; font-weight:900;
-          font-size: clamp(42px,8vw,96px); letter-spacing:0.15em;
-          color: #dc2626;
-          animation: glitch-1 0.6s steps(1) 1.2s 4;
-          z-index: 3; pointer-events:none;
-        }
-        .logo-glitch-2 {
-          position: absolute; top:0; left:0; width:100%; height:100%;
-          font-family: 'Orbitron', monospace; font-weight:900;
-          font-size: clamp(42px,8vw,96px); letter-spacing:0.15em;
-          color: #7f1d1d;
-          animation: glitch-2 0.6s steps(1) 1.2s 4;
-          z-index: 3; pointer-events:none;
-        }
-        .tagline {
-          font-family: 'Orbitron', monospace;
-          font-size: clamp(10px, 1.8vw, 15px);
-          color: #a1a1aa;
-          letter-spacing: 0.35em;
-          animation: tagline-in 1s ease-out 2.2s both;
-        }
-        .scanline-sweep {
-          position: absolute; top:0; left:0; right:0;
-          height: 3px;
-          background: linear-gradient(transparent, rgba(220,38,38,0.4), transparent);
-          animation: scanline-move 3s linear 0.8s 3;
-          pointer-events: none;
-          z-index:10;
-        }
-      `}</style>
-      <div className="scanline-sweep" />
-      <div style={{ textAlign: "center" }}>
-        <div style={{ position: "relative", display: "inline-block" }}>
-          <div className="logo-main">VICTORIS</div>
-          <div className="logo-glitch-1">VICTORIS</div>
-          <div className="logo-glitch-2">VICTORIS</div>
-        </div>
-        <div className="tagline" style={{ marginTop: 16 }}>
-          CODE · COMPETE · CONQUER
-        </div>
+    <div className={styles['glitch-container']} style={{ opacity: visible ? 1 : 0 }}>
+      <div className={styles['scanline-sweep']} />
+      <div className={styles['logo-wrapper']}>
+        <div className={styles['logo-main']}>VICTORIS</div>
+        <div className={styles['logo-glitch-1']}>VICTORIS</div>
+        <div className={styles['logo-glitch-2']}>VICTORIS</div>
       </div>
+      <div className={styles['tagline']}>CODE · COMPETE · CONQUER</div>
     </div>
-  );
-}
+  )
+})
 
 // ─── STEP 1: CINEMATIC INTRO ──────────────────────────────────────────────────
 
@@ -451,7 +374,11 @@ function OrisOnboarding({
       return;
     }
     if (step >= DIALOGUES.length - 1) {
-      onComplete();
+      // Redirect to the actual Arena
+      setTransitioning(true);
+      setTimeout(() => {
+        window.location.href = "/arena/two-sum";
+      }, 1000);
       return;
     }
     setTransitioning(true);
@@ -459,7 +386,7 @@ function OrisOnboarding({
       setStep((s) => s + 1);
       setTransitioning(false);
     }, 300);
-  }, [done, skipType, step, onComplete]);
+  }, [done, skipType, step]);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -610,22 +537,33 @@ function OrisOnboarding({
           0%, 100% { filter: drop-shadow(0 0 20px rgba(255,0,0,0.3)); }
           50% { filter: drop-shadow(0 0 40px rgba(255,0,0,0.5)) drop-shadow(0 0 80px rgba(255,0,0,0.2)); }
         }
+        .dialogue-container {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: center;
+          width: 100%;
+          max-width: 1200px;
+          padding: 60px 400px 60px 80px;
+          position: relative;
+          z-index: 100;
+        }
         .oris-avatar-container {
           position: fixed;
-          bottom: 50px;
+          top: 50%;
           right: 5%;
-          width: 380px;
-          height: 520px;
-          opacity: 0.85;
+          transform: translateY(-50%);
+          width: 280px;
+          height: 380px;
+          opacity: 0.6;
           z-index: 10;
           pointer-events: none;
-          transform: scale(1.7);
-          animation: oris-glow-pulse 3s ease-in-out infinite;
           filter: drop-shadow(0 0 40px rgba(255,0,0,0.25));
+          animation: oris-glow-pulse 3s ease-in-out infinite;
         }
         @media (max-width:1024px) {
           .oris-avatar-container { display:none !important; }
-          .dialogue-container { padding:40px 32px !important; }
+          .dialogue-container { padding: 40px 32px !important; }
         }
       `}</style>
 
@@ -660,20 +598,8 @@ function OrisOnboarding({
         />
       ))}
 
-      {/* Main Content - Centered, Full Width */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-          maxWidth: 1200,
-          padding: "140px 60px 80px 60px",
-          position: "relative",
-          zIndex: 100,
-        }}
-      >
+      {/* Main Content - Constrained to avoid overlap with Oris */}
+      <div className="dialogue-container">
         {/* Progress Dots - Top */}
         <div
           style={{
@@ -746,7 +672,7 @@ function OrisOnboarding({
             className="dialogue-text"
             key={step}
             style={{
-              fontSize: "clamp(72px, 8vw, 120px)",
+              fontSize: "clamp(24px, 4vw, 48px)",
               fontWeight: 800,
               letterSpacing: "-0.02em",
               lineHeight: 1.1,
@@ -782,24 +708,29 @@ function OrisOnboarding({
           {/* Rank Badges */}
           {step === 4 && done && (
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 48 }}>
-              {RANK_SEQUENCE.map((r, i) => (
-                <div
-                  key={i}
-                  className="rank-item"
-                  style={{
-                    fontSize: 12,
-                    padding: "6px 14px",
-                    borderRadius: 4,
-                    background: "rgba(220,38,38,0.1)",
-                    border: "1px solid rgba(220,38,38,0.3)",
-                    color: "rgba(220,38,38,0.8)",
-                    letterSpacing: "0.1em",
-                    animationDelay: `${i * 40}ms`,
-                  }}
-                >
-                  {r}
-                </div>
-              ))}
+              {RANK_SEQUENCE.map((r, i) => {
+                const color = RANK_COLORS[i];
+                return (
+                  <div
+                    key={i}
+                    className="rank-item"
+                    style={{
+                      fontSize: 12,
+                      padding: "6px 14px",
+                      borderRadius: 4,
+                      background: `${color}15`,
+                      border: `1px solid ${color}50`,
+                      color: color,
+                      letterSpacing: "0.1em",
+                      animationDelay: `${i * 40}ms`,
+                      boxShadow: `0 0 10px ${color}20`,
+                      fontWeight: 600,
+                    }}
+                  >
+                    {r}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
