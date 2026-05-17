@@ -270,7 +270,7 @@ function CinematicIntro({ onComplete }) {
 
 function OrisAvatar({ pulse }) {
   return (
-    <div style={{ position: "relative", width: "100%", maxWidth: 340, margin: "0 auto" }}>
+    <div style={{ position: "relative", width: "100%", margin: "0 auto" }}>
       <style>{`
         @keyframes float-oris {
           0%,100% { transform: translateY(0px); }
@@ -391,7 +391,8 @@ function OrisOnboarding({ onComplete }) {
     <div style={{
       position:"fixed", inset:0,
       background:"#0a0a0a",
-      display:"flex", alignItems:"stretch",
+      display:"flex", flexDirection:"column",
+      alignItems:"center", justifyContent:"center",
       zIndex:9998, overflow:"hidden",
       fontFamily:"'Orbitron',monospace",
       opacity: entering ? 0 : 1,
@@ -454,35 +455,17 @@ function OrisOnboarding({ onComplete }) {
           width:6px; height:6px; border-radius:50%;
           transition:all 0.3s;
         }
-        @media (max-width:768px) {
-          .oris-panel { display:none !important; }
-          .dialogue-panel { max-width:100% !important; padding:32px 24px !important; }
-        }
       `}</style>
 
-      {/* Left: Oris visual */}
-      <div className="oris-panel" style={{
-        width:"42%", maxWidth:460,
-        display:"flex", flexDirection:"column",
-        alignItems:"center", justifyContent:"center",
-        padding:"40px 20px 40px 40px",
-        borderRight:"1px solid rgba(255,255,255,0.04)",
-        position:"relative",
-      }}>
-        <div style={{
-          position:"absolute", inset:0,
-          backgroundImage:"linear-gradient(rgba(127,29,29,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(127,29,29,0.04) 1px, transparent 1px)",
-          backgroundSize:"48px 48px", pointerEvents:"none",
-        }}/>
-        <OrisAvatar pulse />
-      </div>
-
-      {/* Right: Dialogue */}
+      {/* Centered Dialogue Content */}
       <div className="dialogue-panel" style={{
-        flex:1, display:"flex", flexDirection:"column",
-        justifyContent:"center", padding:"40px 48px",
-        maxWidth:640, margin:"0 auto",
-        position:"relative",
+        display:"flex", flexDirection:"column",
+        justifyContent:"center", padding:"60px 48px 60px 48px",
+        maxWidth:800, width:"100%",
+        position:"absolute",
+        left:0, top:"50%",
+        transform:"translateY(-50%)",
+        zIndex:10,
       }}>
         {/* Top: step indicator */}
         <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:48 }}>
@@ -503,7 +486,7 @@ function OrisOnboarding({ onComplete }) {
         <div style={{
           opacity: transitioning ? 0 : 1,
           transition:"opacity 0.25s",
-          flex:1, display:"flex", flexDirection:"column", justifyContent:"center",
+          display:"flex", flexDirection:"column", justifyContent:"center",
         }}>
           <div style={{ marginBottom:8, fontSize:9, color:"rgba(220,38,38,0.5)", letterSpacing:"0.3em" }}>
             ORIS //{" "}{String(step+1).padStart(2,"0")}
@@ -516,6 +499,7 @@ function OrisOnboarding({ onComplete }) {
             lineHeight:1.3,
             marginBottom:16,
             minHeight:80,
+            textAlign:"left",
           }}>
             {displayed}
             {!done && <span className="cursor"/>}
@@ -528,6 +512,7 @@ function OrisOnboarding({ onComplete }) {
               fontFamily:"system-ui, sans-serif", fontWeight:400,
               maxWidth:440,
               animation:"sub-in 0.5s ease-out",
+              textAlign:"left",
             }}>
               {dialogue.sub}
             </div>
@@ -572,19 +557,33 @@ function OrisOnboarding({ onComplete }) {
             SPACE / → to advance
           </span>
         </div>
+      </div>
 
-        {/* Bottom progress bar */}
+      {/* Oris Avatar - Middle Right Fixed Position - Larger */}
+      <div style={{
+        position:"fixed",
+        top:"50%",
+        right:"5%",
+        transform:"translateY(-50%)",
+        width:420,
+        height:580,
+        zIndex:20,
+        pointerEvents:"none",
+      }}>
+        <OrisAvatar pulse />
+      </div>
+
+      {/* Bottom progress bar */}
+      <div style={{
+        position:"fixed", bottom:0, left:0, right:0,
+        height:1, background:"rgba(255,255,255,0.04)",
+      }}>
         <div style={{
-          position:"absolute", bottom:0, left:0, right:0,
-          height:1, background:"rgba(255,255,255,0.04)",
-        }}>
-          <div style={{
-            height:"100%", background:"#dc2626",
-            width:`${progress}%`,
-            transition:"width 0.4s ease",
-            boxShadow:"0 0 6px rgba(220,38,38,0.5)",
-          }}/>
-        </div>
+          height:"100%", background:"#dc2626",
+          width:`${progress}%`,
+          transition:"width 0.4s ease",
+          boxShadow:"0 0 6px rgba(220,38,38,0.5)",
+        }}/>
       </div>
     </div>
   )
