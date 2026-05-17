@@ -1,5 +1,5 @@
-import VictorisOnboarding from "@/components/onboarding/VictorisOnboarding";
+import LandingPage from "@/components/landing/LandingPage";
 
 export default function Home(): JSX.Element {
-  return <VictorisOnboarding />;
+  return <LandingPage />;
 }
