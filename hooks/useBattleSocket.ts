@@ -9,7 +9,6 @@ export const useBattleSocket = () => {
   const socketRef = useRef<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null);
   const setSocketConnected = useBattleStore(state => state.setSocketConnected);
   const setRoom = useBattleStore(state => state.setRoom);
-  const room = useBattleStore(state => state.room);
 
   useEffect(() => {
     const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(SOCKET_URL, {
@@ -50,7 +49,7 @@ export const useBattleSocket = () => {
       console.log(`⚔️ Battle started! Problem: ${problemId}`);
     });
 
-    socket.on('battle_ended', ({ winnerId, rankings }) => {
+    socket.on('battle_ended', ({ winnerId }) => {
       console.log(`🏆 Battle Ended! Winner: ${winnerId}`);
     });
 
@@ -69,6 +68,7 @@ export const useBattleSocket = () => {
     callback?: Function
   ) => {
     if (socketRef.current?.connected) {
+      // @ts-ignore
       socketRef.current.emit(event, data, callback as any);
     } else {
       console.warn('Socket not connected. Cannot emit:', event);

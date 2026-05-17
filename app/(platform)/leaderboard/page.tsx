@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getRankByPoints, getNextRank, RANKS, Badge, BADGES } from "@/lib/ranking";
-import { Trophy, Shield, Zap, Moon, Flame, Medal, Target, Users, Globe, Clock, ChevronRight } from "lucide-react";
+import { getRankByPoints, getNextRank, RANKS, BADGES } from "@/lib/ranking";
+import { Trophy, Shield, Zap, Medal, Target, Users, Globe, Clock } from "lucide-react";
 
 // Mock User Data
 const MY_POINTS = 3850;

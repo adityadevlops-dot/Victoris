@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useBattleSocket } from "@/hooks/useBattleSocket";
 import { useBattleStore } from "@/store/battleStore";
-import { useParams, useRouter } from "next/navigation";
-import { Users, Lock, Unlock, Trophy, Play } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Trophy } from "lucide-react";
 import ChallengeLayout from "@/components/arena/ChallengeLayout";
 import ProblemPanel from "@/components/arena/ProblemPanel";
 import EditorPanel from "@/components/arena/EditorPanel";
@@ -12,11 +12,9 @@ import TestCasePanel from "@/components/arena/TestCasePanel";
 import ConsolePanel from "@/components/arena/ConsolePanel";
 
 export default function RoomLobbyPage() {
-  const { roomId } = useParams();
   const router = useRouter();
   const { emit, socket } = useBattleSocket();
   const room = useBattleStore((state) => state.room);
-  const me = useBattleStore((state) => state.me);
   
   // Local states for UI
   const [countdown, setCountdown] = useState<number | null>(null);

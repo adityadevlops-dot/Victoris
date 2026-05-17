@@ -17,12 +17,16 @@ export default function VerdictBanner({ verdict }: { verdict: Verdict }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    let t: NodeJS.Timeout;
     if (verdict !== 'IDLE' && verdict !== 'RUNNING') {
       setVisible(true);
-      const t = setTimeout(() => setVisible(false), 3000);
-      return () => clearTimeout(t);
+      t = setTimeout(() => setVisible(false), 3000);
+    } else {
+      setVisible(false);
     }
-    setVisible(false);
+    return () => {
+      if (t) clearTimeout(t);
+    };
   }, [verdict]);
 
   if (!visible && verdict !== 'RUNNING') return null;

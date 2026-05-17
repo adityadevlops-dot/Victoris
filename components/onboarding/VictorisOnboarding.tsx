@@ -40,14 +40,6 @@ const DIALOGUES = [
 
 const RANK_SEQUENCE = ['Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master', 'Legend']
 const RANK_COLORS = ['#cd7f32', '#c0c0c0', '#ffd700', '#e5e4e2', '#7dd3fc', '#f87171', '#dc2626']
-const LS_KEY = 'victoris_onboarding_v1'
-
-const ANIMATION_TIMINGS = {
-  introStart: 600,
-  introComplete: 4200,
-  orisStart: 100,
-  transitionDuration: 280,
-} as const
 
 // ─── TYPEWRITER HOOK ──────────────────────────────────────────────────────────
 
@@ -112,7 +104,7 @@ function CinematicIntro({
   onComplete,
 }: {
   onComplete: () => void;
-}): JSX.Element {
+}): ReactNode {
   const [logoVisible, setLogoVisible] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -234,7 +226,7 @@ function CinematicIntro({
 
 // ─── ORIS AVATAR ──────────────────────────────────────────────────────────────
 
-function OrisAvatar(): JSX.Element {
+function OrisAvatar(): ReactNode {
   return (
     <div style={{ position: "relative", width: "100%", maxWidth: 340, margin: "0 auto" }}>
       <style>{`
@@ -301,11 +293,11 @@ function OrisAvatar(): JSX.Element {
 
         {/* Corner brackets */}
         {[
-          ["0", "0", "tl"],
-          ["0", "auto", "tr"],
-          ["auto", "0", "bl"],
-          ["auto", "auto", "br"],
-        ].map(([t, b, k]) => (
+          "tl",
+          "tr",
+          "bl",
+          "br",
+        ].map((k) => (
           <div
             key={k}
             style={{
@@ -353,7 +345,7 @@ function OrisOnboarding({
   onComplete,
 }: {
   onComplete: () => void;
-}): JSX.Element {
+}): ReactNode {
   const [step, setStep] = useState(0);
   const [entering, setEntering] = useState(true);
   const [transitioning, setTransitioning] = useState(false);
@@ -808,7 +800,7 @@ function OrisOnboarding({
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
-export default function VictorisOnboarding(): JSX.Element {
+export default function VictorisOnboarding(): ReactNode {
   const [state, setStep] = useState<"cinematic" | "oris" | "done">("cinematic");
 
   return (
