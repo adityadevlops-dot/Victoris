@@ -647,7 +647,7 @@ export default function LandingPage() {
           <a href="#battle">ARENA</a>
           <a href="#stats">STATS</a>
         </div>
-        <Link href="/onboarding">
+        <Link href="/login">
           <button className="nav-cta">ENTER ARENA</button>
         </Link>
       </nav>
@@ -665,7 +665,7 @@ export default function LandingPage() {
             Compete in real-time coding battles. Climb the ranks. Become a Legend.
           </p>
           <div className="hero-actions">
-            <Link href="/onboarding">
+            <Link href="/register">
               <button className="btn-primary">START COMBAT</button>
             </Link>
             <button className="btn-secondary">VIEW LEADERBOARD</button>
